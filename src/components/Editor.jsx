@@ -39,11 +39,11 @@ export default function Editor() {
   const [open, setOpen] = useState("profile");
   const [showAdd, setShowAdd] = useState(false);
 
-  // --- Profile ---
+  
   const handleProfileChange = (field, value) =>
     setResume((r) => ({ ...r, profile: { ...r.profile, [field]: value } }));
 
-  // --- Skills ---
+  
   const addSkill = () =>
     setResume((r) => ({ ...r, skills: [...r.skills, ""] }));
   const updateSkill = (idx, value) =>
@@ -55,7 +55,6 @@ export default function Editor() {
   const removeSkill = (idx) =>
     setResume((r) => ({ ...r, skills: r.skills.filter((_, i) => i !== idx) }));
 
-  // --- Experience ---
   const addExperience = () =>
     setResume((r) => ({
       ...r,
@@ -76,7 +75,6 @@ export default function Editor() {
       experience: r.experience.filter((_, i) => i !== idx),
     }));
 
-  // --- Education ---
   const addEducation = () =>
     setResume((r) => ({
       ...r,
@@ -97,7 +95,6 @@ export default function Editor() {
       education: r.education.filter((_, i) => i !== idx),
     }));
 
-  // --- Projects ---
   const addProject = () =>
     setResume((r) => ({
       ...r,
@@ -115,7 +112,6 @@ export default function Editor() {
       projects: r.projects.filter((_, i) => i !== idx),
     }));
 
-  // --- Dynamic Add Content Feature ---
   const sectionAdders = [
     { key: "skills", label: "Skill", fn: addSkill },
     { key: "experience", label: "Experience", fn: addExperience },
@@ -125,7 +121,6 @@ export default function Editor() {
 
   return (
     <div className="bg-[#f7f6f3] min-h-screen w-full flex flex-col md:flex-row">
-      {/* Sidebar Accordion: Add mx-2 for mobile gutter */}
       <aside className="md:w-1/2 w-full max-w-2xl px-2 md:px-7 flex flex-col bg-transparent pb-6 pt-2 md:py-10 gap-2">
         <div className="flex flex-col gap-2">
           {sectionConfig.map((sec) => (
@@ -418,7 +413,6 @@ export default function Editor() {
             </div>
           ))}
         </div>
-        {/* Add Content Button (opens menu; professional touch) */}
         <div className="relative mt-6 w-full">
           <button
             className="w-full rounded-2xl py-4 font-bold text-lg flex gap-2 justify-center items-center shadow-lg bg-[#8e7f6d] text-white hover:bg-[#6e5e4a] transition"
@@ -446,7 +440,6 @@ export default function Editor() {
         </div>
       </aside>
 
-      {/* Resume Preview: Add mobile mx-2 for gutter */}
       <div className="flex-1 flex justify-center items-start md:py-10 px-2 sm:px-6">
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-[700px] min-h-[85vh] py-8 px-3 sm:px-6 md:px-10">
           <div className="flex items-center gap-6 mb-7 flex-wrap">

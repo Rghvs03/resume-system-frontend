@@ -38,10 +38,10 @@ const cardWidth = "w-[260px] sm:w-[330px]";
 const cardHeight = "h-[390px] sm:h-[480px]";
 
 const Templates = () => {
-  let navigate = useNavigate();
+  let navigate = useNavigate()
   return (
     <div className="min-h-screen w-full bg-[#f7f6f3] flex font-sans">
-      {/* Sidebar */}
+      
       <aside className="hidden md:flex w-[230px] min-h-screen bg-[#eee8de] px-4 pt-8 pb-6 flex-col border-r border-gray-200">
         <div>
           <div className="text-2xl font-extrabold tracking-wide text-[#8e7f6d] mb-8 px-2">
@@ -58,13 +58,13 @@ const Templates = () => {
         </div>
       </aside>
 
-      {/* Main Section */}
+     
       <main className="flex-1 px-4 sm:px-10 py-8">
         <h2 className="text-3xl font-extrabold text-[#524d46] mb-10">
           Resume Templates
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10 justify-items-center">
-          {/* New Resume Card */}
+          
           <div
             className={`${cardWidth} ${cardHeight} border-2 border-dashed border-[#8e7f6d] bg-[#f7f6f3] rounded-xl flex flex-col items-center justify-center
             cursor-pointer transition hover:border-[#524d46] group`}
@@ -78,7 +78,7 @@ const Templates = () => {
             </span>
           </div>
 
-          {/* Template Cards */}
+          
           {resumeTemplates.map((tpl) => (
             <div
               key={tpl.id}
