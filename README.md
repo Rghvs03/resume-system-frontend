@@ -58,7 +58,7 @@ Key focuses included:
 
 ## 👨‍💻 Author
 
-**Your Name**  
+**Raghav Sharma**  
 Frontend Developer | React Enthusiast | UI/UX Designer  
 
 [GitHub](https://github.com/Rghvs03)
