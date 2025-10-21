@@ -1,553 +1,587 @@
 import React, { useState } from "react";
+import {
+  FiUser,
+  FiAward,
+  FiBookOpen,
+  FiBriefcase,
+  FiFileText,
+  FiPlus,
+  FiChevronDown,
+  FiChevronUp,
+} from "react-icons/fi";
+
+const sectionConfig = [
+  { key: "profile", icon: <FiUser />, label: "Profile" },
+  { key: "skills", icon: <FiAward />, label: "Skills" },
+  { key: "experience", icon: <FiBriefcase />, label: "Experience" },
+  { key: "education", icon: <FiBookOpen />, label: "Education" },
+  { key: "projects", icon: <FiFileText />, label: "Projects" },
+];
 
 const defaultResume = {
-  heading: {
+  profile: {
     name: "Your Name",
     title: "",
     email: "",
     phone: "",
     location: "",
     linkedin: "",
-    align: "left",
+    avatar: "",
   },
-  summary: "",
+  skills: [],
   experience: [],
   education: [],
-  skills: [],
   projects: [],
 };
 
-// Section order keys
-const defaultSectionOrder = [
-  "experience",
-  "education",
-  "skills"
-];
-
-const alignmentMap = {
-  left: "items-start text-left",
-  center: "items-center text-center",
-  right: "items-end text-right",
-};
-
-const Editor = () => {
+export default function Editor() {
   const [resume, setResume] = useState(defaultResume);
-  // Controls the order of main fields in preview
-  const [sectionOrder, setSectionOrder] = useState(defaultSectionOrder);
+  const [open, setOpen] = useState("profile");
+  const [showAdd, setShowAdd] = useState(false);
 
-  // Heading
-  const handleHeadingChange = (field, value) =>
-    setResume((prev) => ({
-      ...prev,
-      heading: { ...prev.heading, [field]: value },
+  // --- Profile ---
+  const handleProfileChange = (field, value) =>
+    setResume((r) => ({ ...r, profile: { ...r.profile, [field]: value } }));
+
+  // --- Skills ---
+  const addSkill = () =>
+    setResume((r) => ({ ...r, skills: [...r.skills, ""] }));
+  const updateSkill = (idx, value) =>
+    setResume((r) => {
+      const next = [...r.skills];
+      next[idx] = value;
+      return { ...r, skills: next };
+    });
+  const removeSkill = (idx) =>
+    setResume((r) => ({ ...r, skills: r.skills.filter((_, i) => i !== idx) }));
+
+  // --- Experience ---
+  const addExperience = () =>
+    setResume((r) => ({
+      ...r,
+      experience: [
+        ...r.experience,
+        { jobTitle: "", company: "", start: "", end: "", desc: "" },
+      ],
+    }));
+  const updateExperience = (idx, field, val) =>
+    setResume((r) => {
+      const next = [...r.experience];
+      next[idx][field] = val;
+      return { ...r, experience: next };
+    });
+  const removeExperience = (idx) =>
+    setResume((r) => ({
+      ...r,
+      experience: r.experience.filter((_, i) => i !== idx),
     }));
 
-  const handleSectionChange = (sec, value) =>
-    setResume((prev) => ({ ...prev, [sec]: value }));
-
-  // Experience
-  const addExperience = () =>
-    handleSectionChange("experience", [
-      ...resume.experience,
-      { jobTitle: "", company: "", location: "", start: "", end: "", bullets: [""] },
-    ]);
-  const updateExperience = (idx, field, value) => {
-    const newExp = [...resume.experience];
-    newExp[idx][field] = value;
-    handleSectionChange("experience", newExp);
-  };
-  const removeExperience = (idx) => {
-    const newExp = [...resume.experience];
-    newExp.splice(idx, 1);
-    handleSectionChange("experience", newExp);
-  };
-
-  // Skills
-  const addSkill = () => handleSectionChange("skills", [...resume.skills, ""]);
-  const updateSkill = (idx, value) => {
-    const newSkills = [...resume.skills];
-    newSkills[idx] = value;
-    handleSectionChange("skills", newSkills);
-  };
-  const removeSkill = (idx) => {
-    const newSkills = [...resume.skills];
-    newSkills.splice(idx, 1);
-    handleSectionChange("skills", newSkills);
-  };
-
-  // Education
+  // --- Education ---
   const addEducation = () =>
-    handleSectionChange("education", [
-      ...resume.education,
-      { degree: "", school: "", location: "", start: "", end: "", details: "" },
-    ]);
-  const updateEducation = (idx, field, value) => {
-    const newEdu = [...resume.education];
-    newEdu[idx][field] = value;
-    handleSectionChange("education", newEdu);
-  };
-  const removeEducation = (idx) => {
-    const newEdu = [...resume.education];
-    newEdu.splice(idx, 1);
-    handleSectionChange("education", newEdu);
-  };
+    setResume((r) => ({
+      ...r,
+      education: [
+        ...r.education,
+        { degree: "", school: "", start: "", end: "", desc: "" },
+      ],
+    }));
+  const updateEducation = (idx, field, val) =>
+    setResume((r) => {
+      const next = [...r.education];
+      next[idx][field] = val;
+      return { ...r, education: next };
+    });
+  const removeEducation = (idx) =>
+    setResume((r) => ({
+      ...r,
+      education: r.education.filter((_, i) => i !== idx),
+    }));
 
-  // Reorder fields (move up/down)
-  const moveSection = (section, dir) => {
-    const idx = sectionOrder.indexOf(section);
-    let newOrder = [...sectionOrder];
-    if (dir === "up" && idx > 0) {
-      [newOrder[idx], newOrder[idx - 1]] = [newOrder[idx - 1], newOrder[idx]];
-    }
-    if (dir === "down" && idx < newOrder.length - 1) {
-      [newOrder[idx], newOrder[idx + 1]] = [newOrder[idx + 1], newOrder[idx]];
-    }
-    setSectionOrder(newOrder);
-  };
+  // --- Projects ---
+  const addProject = () =>
+    setResume((r) => ({
+      ...r,
+      projects: [...r.projects, { title: "", link: "", desc: "" }],
+    }));
+  const updateProject = (idx, field, val) =>
+    setResume((r) => {
+      const next = [...r.projects];
+      next[idx][field] = val;
+      return { ...r, projects: next };
+    });
+  const removeProject = (idx) =>
+    setResume((r) => ({
+      ...r,
+      projects: r.projects.filter((_, i) => i !== idx),
+    }));
+
+  // --- Dynamic Add Content Feature ---
+  const sectionAdders = [
+    { key: "skills", label: "Skill", fn: addSkill },
+    { key: "experience", label: "Experience", fn: addExperience },
+    { key: "education", label: "Education", fn: addEducation },
+    { key: "projects", label: "Project", fn: addProject },
+  ];
 
   return (
-    <div className="min-h-screen flex bg-[#f7f6f3]">
-      {/* Sidebar */}
-      <aside className="hidden md:flex flex-col w-[220px] bg-[#eee8de] px-4 pt-10 border-r border-gray-200 font-semibold">
-        <div className="text-2xl text-[#8e7f6d] font-extrabold mb-8 tracking-wide">
-          FlexiRésumé
+    <div className="bg-[#f7f6f3] min-h-screen w-full flex flex-col md:flex-row">
+      {/* Sidebar Accordion: Add mx-2 for mobile gutter */}
+      <aside className="md:w-1/2 w-full max-w-2xl px-2 md:px-7 flex flex-col bg-transparent pb-6 pt-2 md:py-10 gap-2">
+        <div className="flex flex-col gap-2">
+          {sectionConfig.map((sec) => (
+            <div key={sec.key} className="w-full">
+              <button
+                className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl font-bold text-lg shadow bg-white transition-all
+                ${
+                  open === sec.key
+                    ? "ring-2 ring-[#8e7f6d] shadow-lg"
+                    : "hover:bg-[#f3efe8]"
+                }`}
+                onClick={() => setOpen(open === sec.key ? "" : sec.key)}
+                style={{ color: open === sec.key ? "#8e7f6d" : "#6e5e4a" }}
+              >
+                <span className="text-2xl">{sec.icon}</span>
+                <span className="flex-1">{sec.label}</span>
+                <span>
+                  {open === sec.key ? <FiChevronUp /> : <FiChevronDown />}
+                </span>
+              </button>
+              {open === sec.key && (
+                <div className="bg-white border-t rounded-b-2xl px-4 pb-4 pt-3 shadow -mt-2">
+                  {sec.key === "profile" && (
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        value={resume.profile.name}
+                        onChange={(e) =>
+                          handleProfileChange("name", e.target.value)
+                        }
+                        placeholder="Full Name"
+                        className="block w-full p-2 rounded border border-gray-200 font-bold text-lg"
+                      />
+                      <input
+                        type="text"
+                        value={resume.profile.title}
+                        onChange={(e) =>
+                          handleProfileChange("title", e.target.value)
+                        }
+                        placeholder="Job Title"
+                        className="block w-full p-2 rounded border border-gray-200"
+                      />
+                      <input
+                        type="email"
+                        value={resume.profile.email}
+                        onChange={(e) =>
+                          handleProfileChange("email", e.target.value)
+                        }
+                        placeholder="Email"
+                        className="block w-full p-2 rounded border border-gray-200"
+                      />
+                      <input
+                        type="text"
+                        value={resume.profile.phone}
+                        onChange={(e) =>
+                          handleProfileChange("phone", e.target.value)
+                        }
+                        placeholder="Phone"
+                        className="block w-full p-2 rounded border border-gray-200"
+                      />
+                      <input
+                        type="text"
+                        value={resume.profile.location}
+                        onChange={(e) =>
+                          handleProfileChange("location", e.target.value)
+                        }
+                        placeholder="Location"
+                        className="block w-full p-2 rounded border border-gray-200"
+                      />
+                      <input
+                        type="text"
+                        value={resume.profile.linkedin}
+                        onChange={(e) =>
+                          handleProfileChange("linkedin", e.target.value)
+                        }
+                        placeholder="LinkedIn"
+                        className="block w-full p-2 rounded border border-gray-200"
+                      />
+                    </div>
+                  )}
+                  {sec.key === "skills" && (
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap gap-3 mb-1">
+                        {resume.skills.map((skill, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center bg-[#f7f6f3] rounded-full border py-1 px-3 gap-2"
+                          >
+                            <input
+                              value={skill}
+                              onChange={(e) => updateSkill(idx, e.target.value)}
+                              className="bg-transparent outline-none"
+                            />
+                            <button
+                              onClick={() => removeSkill(idx)}
+                              className="text-[#8e7f6d] pl-1 font-bold"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        className="bg-[#8e7f6d] hover:bg-[#6e5e4a] px-5 py-1.5 rounded-full text-white font-bold"
+                        onClick={addSkill}
+                      >
+                        + Add Skill
+                      </button>
+                    </div>
+                  )}
+                  {sec.key === "experience" && (
+                    <div className="space-y-6">
+                      {resume.experience.map((exp, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-[#f7f6f3] py-2 px-3 rounded-xl shadow"
+                        >
+                          <input
+                            value={exp.jobTitle}
+                            onChange={(e) =>
+                              updateExperience(idx, "jobTitle", e.target.value)
+                            }
+                            placeholder="Job Title"
+                            className="w-full border p-2 rounded my-1"
+                          />
+                          <input
+                            value={exp.company}
+                            onChange={(e) =>
+                              updateExperience(idx, "company", e.target.value)
+                            }
+                            placeholder="Company"
+                            className="w-full border p-2 rounded my-1"
+                          />
+                          <div className="flex gap-2">
+                            <input
+                              value={exp.start}
+                              onChange={(e) =>
+                                updateExperience(idx, "start", e.target.value)
+                              }
+                              placeholder="Start"
+                              className="w-1/2 border p-2 rounded my-1"
+                            />
+                            <input
+                              value={exp.end}
+                              onChange={(e) =>
+                                updateExperience(idx, "end", e.target.value)
+                              }
+                              placeholder="End"
+                              className="w-1/2 border p-2 rounded my-1"
+                            />
+                          </div>
+                          <textarea
+                            value={exp.desc}
+                            onChange={(e) =>
+                              updateExperience(idx, "desc", e.target.value)
+                            }
+                            placeholder="Describe your role..."
+                            className="w-full p-2 border rounded my-1"
+                          />
+                          <button
+                            className="mt-2 text-xs text-[#8e7f6d] hover:text-[#6e5e4a] hover:underline"
+                            onClick={() => removeExperience(idx)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        className="bg-[#8e7f6d] hover:bg-[#6e5e4a] px-5 py-1.5 rounded-full text-white font-bold"
+                        onClick={addExperience}
+                      >
+                        + Add Experience
+                      </button>
+                    </div>
+                  )}
+                  {sec.key === "education" && (
+                    <div className="space-y-6">
+                      {resume.education.map((edu, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-[#f7f6f3] py-2 px-3 rounded-xl shadow"
+                        >
+                          <input
+                            value={edu.degree}
+                            onChange={(e) =>
+                              updateEducation(idx, "degree", e.target.value)
+                            }
+                            placeholder="Degree"
+                            className="w-full border p-2 rounded my-1"
+                          />
+                          <input
+                            value={edu.school}
+                            onChange={(e) =>
+                              updateEducation(idx, "school", e.target.value)
+                            }
+                            placeholder="School"
+                            className="w-full border p-2 rounded my-1"
+                          />
+                          <div className="flex gap-2">
+                            <input
+                              value={edu.start}
+                              onChange={(e) =>
+                                updateEducation(idx, "start", e.target.value)
+                              }
+                              placeholder="Start"
+                              className="w-1/2 border p-2 rounded my-1"
+                            />
+                            <input
+                              value={edu.end}
+                              onChange={(e) =>
+                                updateEducation(idx, "end", e.target.value)
+                              }
+                              placeholder="End"
+                              className="w-1/2 border p-2 rounded my-1"
+                            />
+                          </div>
+                          <textarea
+                            value={edu.desc}
+                            onChange={(e) =>
+                              updateEducation(idx, "desc", e.target.value)
+                            }
+                            placeholder="Describe your studies..."
+                            className="w-full p-2 border rounded my-1"
+                          />
+                          <button
+                            className="mt-2 text-xs text-[#8e7f6d] hover:text-[#6e5e4a] hover:underline"
+                            onClick={() => removeEducation(idx)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        className="bg-[#8e7f6d] hover:bg-[#6e5e4a] px-5 py-1.5 rounded-full text-white font-bold"
+                        onClick={addEducation}
+                      >
+                        + Add Education
+                      </button>
+                    </div>
+                  )}
+                  {sec.key === "projects" && (
+                    <div className="space-y-6">
+                      {resume.projects.map((proj, idx) => (
+                        <div
+                          key={idx}
+                          className="bg-[#f7f6f3] py-2 px-3 rounded-xl shadow"
+                        >
+                          <input
+                            value={proj.title}
+                            onChange={(e) =>
+                              updateProject(idx, "title", e.target.value)
+                            }
+                            placeholder="Project Title"
+                            className="w-full border p-2 rounded my-1"
+                          />
+                          <input
+                            value={proj.link}
+                            onChange={(e) =>
+                              updateProject(idx, "link", e.target.value)
+                            }
+                            placeholder="Link (optional)"
+                            className="w-full border p-2 rounded my-1"
+                          />
+                          <textarea
+                            value={proj.desc}
+                            onChange={(e) =>
+                              updateProject(idx, "desc", e.target.value)
+                            }
+                            placeholder="Project description..."
+                            className="w-full p-2 border rounded my-1"
+                          />
+                          <button
+                            className="mt-2 text-xs text-[#8e7f6d] hover:text-[#6e5e4a] hover:underline"
+                            onClick={() => removeProject(idx)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        className="bg-[#8e7f6d] hover:bg-[#6e5e4a] px-5 py-1.5 rounded-full text-white font-bold"
+                        onClick={addProject}
+                      >
+                        + Add Project
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-        <nav className="flex flex-col text-[#524d46] gap-2">
-          <button className="py-3 px-4 text-left bg-white shadow rounded-lg mb-2">
-            Heading
+        {/* Add Content Button (opens menu; professional touch) */}
+        <div className="relative mt-6 w-full">
+          <button
+            className="w-full rounded-2xl py-4 font-bold text-lg flex gap-2 justify-center items-center shadow-lg bg-[#8e7f6d] text-white hover:bg-[#6e5e4a] transition"
+            onClick={() => setShowAdd(!showAdd)}
+            aria-expanded={showAdd}
+          >
+            <FiPlus className="text-xl" /> Add Content
           </button>
-          <button className="py-3 px-4 text-left hover:bg-white rounded-lg mb-2">
-            Summary
-          </button>
-          <button className="py-3 px-4 text-left hover:bg-white rounded-lg mb-2">
-            Experience
-          </button>
-          <button className="py-3 px-4 text-left hover:bg-white rounded-lg mb-2">
-            Education
-          </button>
-          <button className="py-3 px-4 text-left hover:bg-white rounded-lg mb-2">
-            Skills
-          </button>
-        </nav>
-      </aside>
-
-      {/* Main Section */}
-      <main className="flex-1 flex flex-col md:flex-row">
-        {/* Editor Panel */}
-        <section className="md:w-1/2 w-full p-6 space-y-7">
-          {/* Heading Editor */}
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-[#524d46] mb-2">Resume Heading</h2>
-            <div className="flex gap-4 mb-2">
-              {["left", "center", "right"].map((align) => (
+          {showAdd && (
+            <div className="absolute left-0 right-0 mt-2 z-50 bg-white rounded-xl border shadow-lg flex flex-col gap-2 p-3">
+              {sectionAdders.map((sa) => (
                 <button
-                  key={align}
-                  className={`px-3 py-1 rounded border shadow-sm font-semibold ${
-                    resume.heading.align === align
-                      ? "bg-[#8e7f6d] text-white"
-                      : "bg-white text-[#524d46]"
-                  } transition`}
-                  onClick={() => handleHeadingChange("align", align)}
+                  key={sa.key}
+                  onClick={() => {
+                    sa.fn();
+                    setShowAdd(false);
+                  }}
+                  className="w-full px-3 py-3 rounded-lg text-base text-[#6e5e4a] hover:bg-[#f3efe8] transition flex items-center gap-2"
                 >
-                  {align.charAt(0).toUpperCase() + align.slice(1)}
+                  + {sa.label}
                 </button>
               ))}
             </div>
-            <input
-              type="text"
-              value={resume.heading.name}
-              placeholder="Full Name"
-              onChange={(e) => handleHeadingChange("name", e.target.value)}
-              className="w-full p-3 mb-2 border rounded bg-white shadow"
-            />
-            <input
-              type="text"
-              value={resume.heading.title}
-              placeholder="Job Title"
-              onChange={(e) => handleHeadingChange("title", e.target.value)}
-              className="w-full p-3 mb-2 border rounded bg-white"
-            />
-            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-              <input
-                type="email"
-                value={resume.heading.email}
-                placeholder="Email"
-                onChange={(e) => handleHeadingChange("email", e.target.value)}
-                className="flex-1 p-3 border rounded bg-white"
-              />
-              <input
-                type="text"
-                value={resume.heading.phone}
-                placeholder="Phone"
-                onChange={(e) => handleHeadingChange("phone", e.target.value)}
-                className="flex-1 p-3 border rounded bg-white"
-              />
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:gap-3 mt-2">
-              <input
-                type="text"
-                value={resume.heading.location}
-                placeholder="Location"
-                onChange={(e) =>
-                  handleHeadingChange("location", e.target.value)
-                }
-                className="flex-1 p-3 border rounded bg-white"
-              />
-              <input
-                type="text"
-                value={resume.heading.linkedin}
-                placeholder="LinkedIn"
-                onChange={(e) =>
-                  handleHeadingChange("linkedin", e.target.value)
-                }
-                className="flex-1 p-3 border rounded bg-white"
-              />
-            </div>
-          </div>
-          {/* Summary Editor */}
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-[#524d46] mb-2">
-              Professional Summary
-            </h2>
-            <textarea
-              rows={4}
-              value={resume.summary}
-              onChange={(e) => handleSectionChange("summary", e.target.value)}
-              placeholder="Write a compelling professional summary..."
-              className="w-full bg-white border rounded-lg p-4 shadow focus:outline-none"
-            />
-          </div>
-          {/* -- Reorderable Editors for Experience, Education, Skills -- */}
-          {sectionOrder.map((sec, sIdx) => (
-            <div className="mb-8" key={sec}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-bold text-[#524d46] capitalize">{sec}</h2>
-                  {/* Move Up/Down Buttons */}
-                  <button
-                    className="text-xs px-2 py-1 rounded bg-[#e9e2d8] text-[#8e7f6d] font-bold hover:bg-[#d3c7bb] transition"
-                    disabled={sIdx === 0}
-                    onClick={() => moveSection(sec, "up")}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    className="text-xs px-2 py-1 rounded bg-[#e9e2d8] text-[#8e7f6d] font-bold hover:bg-[#d3c7bb] transition"
-                    disabled={sIdx === sectionOrder.length - 1}
-                    onClick={() => moveSection(sec, "down")}
-                  >
-                    ↓
-                  </button>
-                </div>
-                {/* Add Buttons Per Section */}
-                {sec === "experience" && (
-                  <button
-                    className="bg-[#8e7f6d] text-white px-4 py-2 rounded-full font-semibold"
-                    onClick={addExperience}
-                  >
-                    + Add
-                  </button>
-                )}
-                {sec === "education" && (
-                  <button
-                    className="bg-[#8e7f6d] text-white px-4 py-2 rounded-full font-semibold"
-                    onClick={addEducation}
-                  >
-                    + Add
-                  </button>
-                )}
-                {sec === "skills" && (
-                  <button
-                    className="bg-[#8e7f6d] text-white px-4 py-2 rounded-full font-semibold"
-                    onClick={addSkill}
-                  >
-                    + Add
-                  </button>
-                )}
-              </div>
-              {sec === "experience" &&
-                <div className="space-y-6">
-                  {resume.experience.map((exp, idx) => (
-                    <div key={idx} className="border border-gray-200 rounded-lg p-4 bg-white shadow">
-                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
-                        <input
-                          type="text"
-                          value={exp.jobTitle}
-                          onChange={e => updateExperience(idx, "jobTitle", e.target.value)}
-                          placeholder="Job Title"
-                          className="flex-1 p-2 border rounded bg-white"
-                        />
-                        <input
-                          type="text"
-                          value={exp.company}
-                          onChange={e => updateExperience(idx, "company", e.target.value)}
-                          placeholder="Company"
-                          className="flex-1 p-2 border rounded bg-white"
-                        />
-                      </div>
-                      <div className="flex gap-2 mb-2">
-                        <input
-                          type="text"
-                          value={exp.location}
-                          onChange={e => updateExperience(idx, "location", e.target.value)}
-                          placeholder="Location"
-                          className="flex-1 p-2 border rounded bg-white"
-                        />
-                        <input
-                          type="text"
-                          value={exp.start}
-                          onChange={e => updateExperience(idx, "start", e.target.value)}
-                          placeholder="Start"
-                          className="w-28 p-2 border rounded bg-white"
-                        />
-                        <input
-                          type="text"
-                          value={exp.end}
-                          onChange={e => updateExperience(idx, "end", e.target.value)}
-                          placeholder="End"
-                          className="w-28 p-2 border rounded bg-white"
-                        />
-                      </div>
-                      <div>
-                        {exp.bullets.map((b, bIdx) => (
-                          <input
-                            key={bIdx}
-                            value={b}
-                            onChange={e => {
-                              const updated = [...exp.bullets];
-                              updated[bIdx] = e.target.value;
-                              updateExperience(idx, "bullets", updated);
-                            }}
-                            placeholder="Achievement or responsibility..."
-                            className="w-full p-2 mb-2 border rounded bg-white"
-                          />
-                        ))}
-                        <div className="flex gap-2 mt-1">
-                          <button
-                            onClick={() => updateExperience(idx, "bullets", [...exp.bullets, ""])}
-                            className="text-xs bg-[#8e7f6d] text-white px-2 py-1 rounded"
-                          >
-                            + Bullet
-                          </button>
-                          {exp.bullets.length > 1 && (
-                            <button
-                              onClick={() => updateExperience(idx, "bullets", exp.bullets.slice(0, -1))}
-                              className="text-xs bg-red-100 text-red-900 px-2 py-1 rounded"
-                            >
-                              Remove Bullet
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <button
-                        className="mt-3 text-xs text-red-600 hover:underline"
-                        onClick={() => removeExperience(idx)}
-                      >
-                        Remove Experience
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              }
-              {sec === "education" &&
-                <div className="space-y-6">
-                  {resume.education.map((edu, idx) => (
-                    <div key={idx} className="border border-gray-200 rounded-lg p-4 bg-white shadow">
-                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
-                        <input
-                          type="text"
-                          value={edu.degree}
-                          onChange={e => updateEducation(idx, "degree", e.target.value)}
-                          placeholder="Degree"
-                          className="flex-1 p-2 border rounded bg-white"
-                        />
-                        <input
-                          type="text"
-                          value={edu.school}
-                          onChange={e => updateEducation(idx, "school", e.target.value)}
-                          placeholder="School"
-                          className="flex-1 p-2 border rounded bg-white"
-                        />
-                      </div>
-                      <div className="flex gap-2 mb-2">
-                        <input
-                          type="text"
-                          value={edu.location}
-                          onChange={e => updateEducation(idx, "location", e.target.value)}
-                          placeholder="Location"
-                          className="flex-1 p-2 border rounded bg-white"
-                        />
-                        <input
-                          type="text"
-                          value={edu.start}
-                          onChange={e => updateEducation(idx, "start", e.target.value)}
-                          placeholder="Start"
-                          className="w-28 p-2 border rounded bg-white"
-                        />
-                        <input
-                          type="text"
-                          value={edu.end}
-                          onChange={e => updateEducation(idx, "end", e.target.value)}
-                          placeholder="End"
-                          className="w-28 p-2 border rounded bg-white"
-                        />
-                      </div>
-                      <textarea
-                        value={edu.details}
-                        onChange={e => updateEducation(idx, "details", e.target.value)}
-                        placeholder="Details, honors, activities…"
-                        className="w-full p-2 border rounded bg-white"
-                      />
-                      <button
-                        className="mt-3 text-xs text-red-600 hover:underline"
-                        onClick={() => removeEducation(idx)}
-                      >
-                        Remove Education
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              }
-              {sec === "skills" &&
-                <div className="flex flex-wrap gap-3">
-                  {resume.skills.map((skill, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-2 bg-white shadow border border-gray-200 px-3 py-2 rounded-full"
-                    >
-                      <input
-                        value={skill}
-                        onChange={e => updateSkill(idx, e.target.value)}
-                        className="bg-transparent outline-none text-[#524d46] font-semibold"
-                      />
-                      <button
-                        onClick={() => removeSkill(idx)}
-                        className="text-sm text-red-400 hover:text-red-600"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              }
-            </div>
-          ))}
-        </section>
+          )}
+        </div>
+      </aside>
 
-        {/* Live Resume Preview */}
-        <aside className="md:w-1/2 w-full px-4 py-8 flex flex-col items-center">
-          <div className="bg-white rounded-2xl shadow-2xl border border-[#eee8de] w-[340px] sm:w-[440px] md:w-[470px] max-w-full min-h-[620px] px-7 py-7 flex flex-col gap-5">
-            {/* Heading Preview */}
-            <div
-              className={`flex flex-col ${alignmentMap[resume.heading.align]}`}
-            >
-              <span className="text-3xl font-bold text-[#524d46]">
-                {resume.heading.name}
-              </span>
-              <span className="text-lg mt-1 font-semibold text-[#8e7f6d]">
-                {resume.heading.title}
-              </span>
-              <div className="text-[15px] text-[#816f53] mt-3 flex gap-3 flex-wrap">
-                {resume.heading.email && <span>{resume.heading.email}</span>}
-                {resume.heading.phone && <span>{resume.heading.phone}</span>}
-                {resume.heading.location && (
-                  <span>{resume.heading.location}</span>
+      {/* Resume Preview: Add mobile mx-2 for gutter */}
+      <div className="flex-1 flex justify-center items-start md:py-10 px-2 sm:px-6">
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 w-full max-w-[700px] min-h-[85vh] py-8 px-3 sm:px-6 md:px-10">
+          <div className="flex items-center gap-6 mb-7 flex-wrap">
+            {resume.profile.avatar && (
+              <img
+                src={resume.profile.avatar}
+                alt="avatar"
+                className="h-16 w-16 rounded-full object-cover"
+              />
+            )}
+            <div>
+              <h1 className="text-3xl font-bold" style={{ color: "#6e5e4a" }}>
+                {resume.profile.name}
+              </h1>
+              <h2 className="text-xl" style={{ color: "#8e7f6d" }}>
+                {resume.profile.title}
+              </h2>
+              <div
+                className="flex flex-wrap gap-x-4 gap-y-1 text-base mt-1"
+                style={{ color: "#6e5e4a" }}
+              >
+                {resume.profile.email && <span>{resume.profile.email}</span>}
+                {resume.profile.phone && <span>{resume.profile.phone}</span>}
+                {resume.profile.location && (
+                  <span>{resume.profile.location}</span>
                 )}
-                {resume.heading.linkedin && (
-                  <span>{resume.heading.linkedin}</span>
+                {resume.profile.linkedin && (
+                  <span>{resume.profile.linkedin}</span>
                 )}
               </div>
             </div>
-            {/* Summary */}
-            {resume.summary && (
-              <div>
-                <h3 className="text-base uppercase tracking-wide text-[#8e7f6d] mb-1 font-bold">
-                  Summary
-                </h3>
-                <div className="text-[15px] text-[#524d46] whitespace-pre-line">
-                  {resume.summary}
-                </div>
-              </div>
-            )}
-            {/* Render Preview Sections in Live Order */}
-            {sectionOrder.map(sec => (
-              <React.Fragment key={sec}>
-                {sec === "experience" && resume.experience.length > 0 && (
-                  <div>
-                    <h3 className="text-base uppercase tracking-wide text-[#8e7f6d] mb-1 font-bold">
-                      Experience
-                    </h3>
-                    <div className="flex flex-col gap-3">
-                      {resume.experience.map((exp, idx) => (
-                        <div key={idx}>
-                          <div className="flex flex-col sm:flex-row gap-2 font-semibold">
-                            <span>{exp.jobTitle}</span>
-                            {exp.company && (
-                              <span className="text-[#8e7f6d]">
-                                @ {exp.company}
-                              </span>
-                            )}
-                            <span className="ml-auto text-sm">
-                              {exp.start} - {exp.end}
-                            </span>
-                          </div>
-                          <div className="text-sm text-[#82685d]">
-                            {exp.location}
-                          </div>
-                          <ul className="ml-5 list-disc text-sm text-[#705849]">
-                            {exp.bullets.map((b, bIdx) => (
-                              <li key={bIdx}>{b}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {sec === "education" && resume.education.length > 0 && (
-                  <div>
-                    <h3 className="text-base uppercase tracking-wide text-[#8e7f6d] mb-1 font-bold">
-                      Education
-                    </h3>
-                    <div className="flex flex-col gap-3">
-                      {resume.education.map((edu, idx) => (
-                        <div key={idx}>
-                          <div className="flex flex-col sm:flex-row gap-2 font-semibold">
-                            <span>{edu.degree}</span>
-                            {edu.school && <span className="text-[#8e7f6d]">@ {edu.school}</span>}
-                            <span className="ml-auto text-sm">{edu.start} - {edu.end}</span>
-                          </div>
-                          <div className="text-sm text-[#82685d]">{edu.location}</div>
-                          {edu.details && <div className="text-sm text-[#705849]">{edu.details}</div>}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {sec === "skills" && resume.skills.length > 0 && (
-                  <div>
-                    <h3 className="text-base uppercase tracking-wide text-[#8e7f6d] mb-1 font-bold">
-                      Skills
-                    </h3>
-                    <div className="flex flex-wrap gap-3">
-                      {resume.skills.map((s, idx) => (
-                        <span
-                          key={idx}
-                          className="bg-[#f2ede9] border border-[#e4dbd2] px-4 py-1 rounded-full text-[#524d46] font-semibold text-sm"
-                        >
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </React.Fragment>
-            ))}
           </div>
-        </aside>
-      </main>
+          {/* Other sections */}
+          {resume.skills.length > 0 && (
+            <div className="my-5">
+              <h3
+                className="font-bold uppercase text-sm mb-2"
+                style={{ color: "#8e7f6d" }}
+              >
+                Skills
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {resume.skills.map((s, i) => (
+                  <span
+                    key={i}
+                    className="bg-[#f7f6f3] rounded-full px-4 py-1 font-semibold text-sm"
+                    style={{ color: "#6e5e4a" }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {resume.experience.length > 0 && (
+            <div className="my-6">
+              <h3
+                className="font-bold uppercase text-sm mb-2"
+                style={{ color: "#8e7f6d" }}
+              >
+                Experience
+              </h3>
+              {resume.experience.map((exp, idx) => (
+                <div key={idx} className="mb-3">
+                  <div className="flex flex-col sm:flex-row gap-2 font-bold">
+                    <span>{exp.jobTitle}</span>
+                    <span style={{ color: "#8e7f6d" }}>@ {exp.company}</span>
+                    <span
+                      className="ml-auto text-sm font-medium"
+                      style={{ color: "#6e5e4a" }}
+                    >
+                      {exp.start} - {exp.end}
+                    </span>
+                  </div>
+                  <div className="ml-1 text-xs" style={{ color: "#6e5e4a" }}>
+                    {exp.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {resume.education.length > 0 && (
+            <div className="my-6">
+              <h3
+                className="font-bold uppercase text-sm mb-2"
+                style={{ color: "#8e7f6d" }}
+              >
+                Education
+              </h3>
+              {resume.education.map((edu, idx) => (
+                <div key={idx} className="mb-3">
+                  <div className="flex flex-col sm:flex-row gap-2 font-bold">
+                    <span>{edu.degree}</span>
+                    <span style={{ color: "#8e7f6d" }}>@ {edu.school}</span>
+                    <span
+                      className="ml-auto text-sm font-medium"
+                      style={{ color: "#6e5e4a" }}
+                    >
+                      {edu.start} - {edu.end}
+                    </span>
+                  </div>
+                  <div className="ml-1 text-xs" style={{ color: "#6e5e4a" }}>
+                    {edu.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {resume.projects.length > 0 && (
+            <div className="my-6">
+              <h3
+                className="font-bold uppercase text-sm mb-2"
+                style={{ color: "#8e7f6d" }}
+              >
+                Projects
+              </h3>
+              {resume.projects.map((p, idx) => (
+                <div key={idx} className="mb-3">
+                  <div className="flex flex-col sm:flex-row gap-2 font-bold">
+                    <span>{p.title}</span>
+                    {p.link && (
+                      <span className="underline" style={{ color: "#8e7f6d" }}>
+                        {p.link}
+                      </span>
+                    )}
+                  </div>
+                  <div className="ml-1 text-xs" style={{ color: "#6e5e4a" }}>
+                    {p.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Editor;
+}
