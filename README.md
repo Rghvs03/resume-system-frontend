@@ -1,16 +1,64 @@
-# React + Vite
+# 🧩 Resume Builder 2025
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and fully responsive **Resume Builder** built with **React** and **Tailwind CSS**.
 
-Currently, two official plugins are available:
+Create, manage, and preview your professional resumes in real-time — designed for an exceptional mobile and desktop experience.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🚀 Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Resume Builder 2025** is a next-generation resume creation platform that lets users visually design resumes through an intuitive editor and live preview.  
 
-## Expanding the ESLint configuration
+It’s built for developers, students, and professionals who want to stand out with sleek, dynamic, and personalized resumes.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🎨 Features
+
+- 🧠 **Smart Accordion Editor** – Structured, smooth, and interactive editing  
+- ⚡ **Live Preview** – Every input instantly updates your resume view  
+- 🪶 **Branded UI Design** – Classy color palette: `#8e7f6d`, `#6e5e4a`, and white  
+- 📱 **Fully Responsive** – Optimized for every screen size  
+- 🧩 **Dynamic “Add Content” Feature** – Insert sections instantly with one click  
+- 🖋 **Modern About Page** – Minimal design, icons, and custom vectors  
+- 💡 **Scalable & Clean Code** – Ready for future integration and enhancements  
+
+---
+
+## 🧩 Tech Stack
+
+| Technology | Usage |
+|-------------|--------|
+| **React.js (Vite)** | Component-based frontend |
+| **Tailwind CSS** | Utility-first styling |
+| **React Icons** | Lightweight icons for cleaner UI |
+| **Vercel** | Hosting and deployment |
+
+---
+
+## 🌐 Live Demo
+
+🖥 Visit the live project here:  
+[**https://resume-system-frontend-alpha.vercel.app/**]
+
+---
+
+## 💡 About the Project
+
+This project was conceptualized and developed as part of the **Resume System Trial Task 2025**,  
+demonstrating a professional, UI-driven approach to modern web applications.  
+
+Key focuses included:
+- Modular component design  
+- Mobile-first responsiveness  
+- Smooth UI/UX workflow  
+
+---
+
+## 👨‍💻 Author
+
+**Your Name**  
+Frontend Developer | React Enthusiast | UI/UX Designer  
+
+[GitHub](https://github.com/Rghvs03)
